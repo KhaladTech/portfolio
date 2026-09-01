@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage cases — Khalad DFIR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a href="../index.html">← Live site</a>
+    <a href="cases.html" class="active">Cases</a>
+    <a href="profile.html">Profile</a>
+  </div>
+  <h1>Manage cases</h1>
+  <p class="sub">Add, edit, reorder, or remove case log entries. Newest should stay at the top.</p>
+
+  <div id="settingsContainer"></div>
+
+  <div id="workArea" style="display:none;">
+    <div class="card">
+      <h2 id="formTitle">Add a case</h2>
+      <label>Title</label>
+      <input type="text" id="fTitle" placeholder="e.g. Live investigation — Worm.Ramnit intrusion">
+
+      <label>Year</label>
+      <input type="text" id="fYear" placeholder="2026">
+
+      <label>Description</label>
+      <textarea id="fDesc" placeholder="What you did, what you found, how you found it."></textarea>
+
+      <label>Artifacts / tags (comma-separated)</label>
+      <input type="text" id="fArtifacts" placeholder="Prefetch, AppData, VirusTotal">
+
+      <div class="row">
+        <button class="primary" id="fSave">Add case</button>
+        <button id="fCancel" style="display:none;">Cancel edit</button>
+      </div>
+      <div id="formStatus"></div>
+    </div>
+
+    <h2 style="margin-top:8px;">Current cases</h2>
+    <div id="caseList"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+let dataCache = null;
+let sha = null;
+let editingIndex = null; // null = adding new
+
+function init(loaded){
+  dataCache = loaded.content;
+  sha = loaded.sha;
+  document.getElementById('workArea').style.display = 'block';
+  renderList();
+}
+
+function renderList(){
+  const list = document.getElementById('caseList');
+  const cases = dataCache.cases || [];
+  if(cases.length === 0){
+    list.innerHTML = `<p class="sub">No cases yet.</p>`;
+    return;
+  }
+  list.innerHTML = cases.map((c, i) => `
+    <div class="item">
+      <div class="item-head">
+        <strong>${escapeHtml(c.title)}</strong>
+        <div class="item-actions">
+          <button onclick="moveCase(${i}, -1)" ${i===0?'disabled':''}>↑</button>
+          <button onclick="moveCase(${i}, 1)" ${i===cases.length-1?'disabled':''}>↓</button>
+          <button onclick="editCase(${i})">Edit</button>
+          <button class="danger" onclick="deleteCase(${i})">Delete</button>
+        </div>
+      </div>
+      <div class="item-meta">${escapeHtml(c.year || '')} · ${(c.artifacts||[]).join(', ')}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+
+function resetForm(){
+  editingIndex = null;
+  document.getElementById('formTitle').textContent = 'Add a case';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fYear').value = '';
+  document.getElementById('fDesc').value = '';
+  document.getElementById('fArtifacts').value = '';
+  document.getElementById('fSave').textContent = 'Add case';
+  document.getElementById('fCancel').style.display = 'none';
+}
+
+function editCase(i){
+  const c = dataCache.cases[i];
+  editingIndex = i;
+  document.getElementById('formTitle').textContent = 'Edit case';
+  document.getElementById('fTitle').value = c.title || '';
+  document.getElementById('fYear').value = c.year || '';
+  document.getElementById('fDesc').value = c.description || '';
+  document.getElementById('fArtifacts').value = (c.artifacts || []).join(', ');
+  document.getElementById('fSave').textContent = 'Save changes';
+  document.getElementById('fCancel').style.display = 'inline-block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+async function deleteCase(i){
+  if(!confirm('Delete this case?')) return;
+  dataCache.cases.splice(i, 1);
+  await persist('Delete case');
+}
+
+async function moveCase(i, dir){
+  const j = i + dir;
+  const arr = dataCache.cases;
+  if(j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  await persist('Reorder cases');
+}
+
+async function persist(message){
+  const status = document.getElementById('formStatus');
+  status.innerHTML = `<div class="status pending">Saving…</div>`;
+  try{
+    const result = await writeDataFile(dataCache, sha, message);
+    sha = result.content.sha;
+    status.innerHTML = `<div class="status ok">Saved. Live site will update on next load.</div>`;
+    renderList();
+  }catch(e){
+    status.innerHTML = `<div class="status err">${e.message}</div>`;
+  }
+}
+
+document.getElementById('fSave').addEventListener('click', async () => {
+  const title = document.getElementById('fTitle').value.trim();
+  const year = document.getElementById('fYear').value.trim();
+  const description = document.getElementById('fDesc').value.trim();
+  const artifacts = document.getElementById('fArtifacts').value
+    .split(',').map(s => s.trim()).filter(Boolean);
+
+  if(!title || !description){
+    document.getElementById('formStatus').innerHTML = `<div class="status err">Title and description are required.</div>`;
+    return;
+  }
+
+  const entry = { year, title, description, artifacts };
+  if(!dataCache.cases) dataCache.cases = [];
+
+  if(editingIndex === null){
+    dataCache.cases.unshift(entry); // new cases go to top
+  }else{
+    dataCache.cases[editingIndex] = entry;
+  }
+
+  await persist(editingIndex === null ? 'Add case' : 'Edit case');
+  resetForm();
+});
+
+document.getElementById('fCancel').addEventListener('click', resetForm);
+
+renderSettingsPanel(document.getElementById('settingsContainer'), init);
+</script>
+</body>
+</html>
