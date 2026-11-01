@@ -1,4 +1,4 @@
-# Khalad — DFIR Portfolio
+# Khalad Alrayes —  Portfolio
 
 Three parts:
 - `index.html` — the public site. **Display only** — it just reads `data.json` and renders it. Don't edit it for content changes.
