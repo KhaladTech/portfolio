@@ -61,16 +61,6 @@
   "investigations": [
     {
       "year": "2026",
-      "title": "Dropper behavior analysis via reverse engineering",
-      "description": "Decompiled a dropper sample in Cutter and confirmed its execution logic and payload behavior.",
-      "tags": [
-        "Cutter",
-        "Static RE",
-        "Malware"
-      ]
-    },
-    {
-      "year": "2026",
       "title": "Live investigation — Worm.Ramnit intrusion",
       "description": "Investigated a compromised machine and correlated Prefetch, AppData, and Jumplist artifacts to reconstruct activity.",
       "tags": [
