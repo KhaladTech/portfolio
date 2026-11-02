@@ -45,18 +45,7 @@
       ]
     }
   ],
-  "investigations": [
-    {
-      "year": "2026",
-      "title": "BitLocker recovery via GPP cpassword decryption",
-      "description": "Recovered access to a BitLocker-encrypted lab drive by analyzing Group Policy Preferences credentials.",
-      "tags": [
-        "BitLocker",
-        "GPP",
-        "Disk Forensics"
-      ]
-    }
-  ],
+  "investigations": [],
   "skills": [
     {
       "group": "Digital Forensics",
