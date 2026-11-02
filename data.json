@@ -48,16 +48,6 @@
   "investigations": [
     {
       "year": "2026",
-      "title": "Data exfiltration — USN Journal & MFT analysis",
-      "description": "Reconstructed a data-exfiltration scenario using USN Journal and MFT analysis, including identification of anti-forensic evidence.",
-      "tags": [
-        "USN Journal",
-        "MFT",
-        "Anti-forensics"
-      ]
-    },
-    {
-      "year": "2026",
       "title": "BitLocker recovery via GPP cpassword decryption",
       "description": "Recovered access to a BitLocker-encrypted lab drive by analyzing Group Policy Preferences credentials.",
       "tags": [
