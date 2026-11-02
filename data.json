@@ -48,16 +48,6 @@
   "investigations": [
     {
       "year": "2026",
-      "title": "Cobalt Strike intrusion chain reconstruction",
-      "description": "Correlated Windows Defender, PowerShell, and Sysmon logs into a sequence of attacker activity.",
-      "tags": [
-        "Sysmon",
-        "PowerShell",
-        "Windows Defender"
-      ]
-    },
-    {
-      "year": "2026",
       "title": "Data exfiltration — USN Journal & MFT analysis",
       "description": "Reconstructed a data-exfiltration scenario using USN Journal and MFT analysis, including identification of anti-forensic evidence.",
       "tags": [
