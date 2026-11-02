@@ -90,10 +90,6 @@
   ],
   "achievements": [
     {
-      "title": "Digital Forensics Workshop",
-      "description": "Delivered a hands-on digital forensics workshop for university students."
-    },
-    {
       "title": "TechHack CTF — 1st Place",
       "description": "Achieved first place in the TechHack cybersecurity CTF competition."
     }
