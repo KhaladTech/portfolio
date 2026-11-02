@@ -1,90 +1,59 @@
 {
   "hero": {
-    "tag": "Open to DFIR / SOC roles",
-    "headline": "Reconstructing what happened, from what was left behind.",
-    "lede": "Khalad — digital forensics and incident response. I trace intrusions through registry hives, file system metadata, and log artifacts until the story holds together.",
-    "pills": ["eCDFP", "eCTHP", "eCPPT", "Government DFIR internship"]
+    "tag": "Cybersecurity Portfolio · DFIR / SOC",
+    "headline": "Investigations, labs, and security projects.",
+    "lede": "Khalad — cybersecurity graduate focused on digital forensics, incident response, SOC operations, and hands-on security research.",
+    "pills": ["DFIR", "SOC", "Threat Hunting", "Digital Forensics"]
   },
   "about": {
     "paragraphs": [
-      "I'm a cybersecurity graduate specializing in digital forensics and incident response. My work centers on Windows artifact analysis \u2014 registry, MFT, USN Journal, Prefetch, and log correlation \u2014 to reconstruct how a system was compromised and what an intruder actually did.",
-      "I completed a DFIR-focused internship at a government entity, and I learn best by working real cases rather than studying theory in isolation \u2014 most of what's below came out of that approach."
+      "I'm a cybersecurity graduate specializing in digital forensics and incident response. This portfolio documents projects I have built, hands-on labs I have completed, and investigations where I reconstructed activity from forensic artifacts and security logs.",
+      "My work spans Windows forensics, memory and disk analysis, log correlation, malware analysis, mobile forensics, network analysis, threat hunting, and offensive-security labs."
     ],
     "certifications": [
-      { "code": "eCDFP", "name": "Digital Forensics Professional" },
-      { "code": "eCTHP", "name": "Threat Hunting Professional" },
-      { "code": "eCPPT", "name": "Professional Penetration Tester" }
+      {"code":"eCDFP","name":"Digital Forensics Professional"},
+      {"code":"eCTHP","name":"Threat Hunting Professional"},
+      {"code":"eCPPT","name":"Professional Penetration Tester"}
     ]
   },
-  "project": {
-    "tag": "Graduation project",
-    "title": "ForensiQ + EZ Toolkit",
-    "paragraphs": [
-      "An automated DFIR web platform (ForensiQ) paired with a desktop forensics toolkit (EZ Toolkit) that runs Windows artifact analysis end to end \u2014 registry, event logs, MFT, and browser history \u2014 instead of chaining separate tools by hand.",
-      "The desktop toolkit is a Python app that wraps Eric Zimmermann's tool suite in a working interface, handling tool paths and output parsing so the analyst gets straight to the findings."
-    ],
-    "stack": ["Python", "customtkinter", "RegRipper", "MFTECmd", "AmcacheParser"]
-  },
-  "cases": [
+  "projects": [
     {
-      "year": "2026",
-      "title": "Dropper behavior analysis via reverse engineering",
-      "description": "Decompiled a dropper sample in Cutter and confirmed its two-branch execution logic: on success, it delays via ping before executing the dropped payload with ShellExecuteW; on failure, it self-deletes with a cmd.exe call. Correlated it to a related sample from the same investigation.",
-      "artifacts": ["Cutter", "Static RE", "Malware behavior"]
-    },
-    {
-      "year": "2026",
-      "title": "Live investigation \u2014 Worm.Ramnit intrusion",
-      "description": "Investigated a compromised machine live, identifying Worm.Ramnit through VirusTotal and correlating Prefetch, AppData, and jumplist artifacts to build a timeline of execution and persistence.",
-      "artifacts": ["Prefetch", "AppData", "Jumplists", "VirusTotal"]
-    },
-    {
-      "year": "2026",
-      "title": "Cobalt Strike intrusion chain reconstruction",
-      "description": "Traced a Cobalt Strike\u2013related intrusion chain by correlating Windows Defender, PowerShell, and Sysmon logs into a single sequence of attacker activity.",
-      "artifacts": ["Sysmon", "PowerShell logs", "Windows Defender"]
-    },
-    {
-      "year": "2026",
-      "title": "Data exfiltration \u2014 USN Journal & MFT analysis",
-      "description": "Reconstructed a data exfiltration scenario using USN Journal and MFT analysis, including identifying a decoy flag deliberately planted in the Journal to mislead the investigation.",
-      "artifacts": ["USN Journal", "MFT", "Anti-forensics"]
-    },
-    {
-      "year": "2026",
-      "title": "BitLocker recovery via GPP cpassword decryption",
-      "description": "Recovered access to a BitLocker-encrypted drive by exploiting the Group Policy Preferences cpassword vulnerability (MS14-025) to decrypt stored credentials.",
-      "artifacts": ["BitLocker", "MS14-025", "GPP cpassword"]
+      "title":"ForensiQ + EZ Toolkit",
+      "type":"Graduation Project",
+      "description":"An automated DFIR web platform paired with a desktop forensics toolkit for file triage and Windows artifact analysis.",
+      "tags":["Python","DFIR","RegRipper","MFTECmd","AmcacheParser"]
     }
+  ],
+  "labs": [
+    {
+      "title":"Cyber Kill Chain Adversary Simulation",
+      "type":"Adversary Simulation",
+      "description":"End-to-end controlled security lab following the attack lifecycle from phishing and initial access through execution, defense evasion, and ransomware deployment on a designated test endpoint.",
+      "tags":["Cyber Kill Chain","Phishing","Windows","Defense Evasion","Ransomware Lab"]
+    }
+  ],
+  "investigations": [
+    {"year":"2026","title":"Dropper behavior analysis via reverse engineering","description":"Decompiled a dropper sample in Cutter and confirmed its execution logic and payload behavior.","tags":["Cutter","Static RE","Malware"]},
+    {"year":"2026","title":"Live investigation — Worm.Ramnit intrusion","description":"Investigated a compromised machine and correlated Prefetch, AppData, and Jumplist artifacts to reconstruct activity.","tags":["Prefetch","AppData","Jumplists","VirusTotal"]},
+    {"year":"2026","title":"Cobalt Strike intrusion chain reconstruction","description":"Correlated Windows Defender, PowerShell, and Sysmon logs into a sequence of attacker activity.","tags":["Sysmon","PowerShell","Windows Defender"]},
+    {"year":"2026","title":"Data exfiltration — USN Journal & MFT analysis","description":"Reconstructed a data-exfiltration scenario using USN Journal and MFT analysis, including identification of anti-forensic evidence.","tags":["USN Journal","MFT","Anti-forensics"]},
+    {"year":"2026","title":"BitLocker recovery via GPP cpassword decryption","description":"Recovered access to a BitLocker-encrypted lab drive by analyzing Group Policy Preferences credentials.","tags":["BitLocker","GPP","Disk Forensics"]}
   ],
   "skills": [
-    {
-      "group": "Artifact analysis",
-      "items": ["Registry (RegRipper)", "MFT / USN Journal (MFTECmd)", "Amcache (AmcacheParser)", "Prefetch, AppData, jumplists"]
-    },
-    {
-      "group": "Log & intrusion analysis",
-      "items": ["Sysmon", "PowerShell logs", "Windows Defender logs", "Timeline reconstruction"]
-    },
-    {
-      "group": "Malware & reverse engineering",
-      "items": ["Cutter (static RE)", "VirusTotal triage", "Dropper / behavior analysis"]
-    },
-    {
-      "group": "Tooling",
-      "items": ["Python (customtkinter)", "Eric Zimmermann tool suite", "BitLocker / disk encryption analysis"]
-    }
+    {"group":"Digital Forensics","items":["Windows Registry","MFT / USN Journal","Memory Forensics","Disk Forensics","Timeline Reconstruction"]},
+    {"group":"SOC & Incident Response","items":["Splunk","Sysmon","Windows Event Logs","Threat Hunting","Incident Investigation"]},
+    {"group":"Malware & Network","items":["Malware Analysis","Cutter","Wireshark","Network Traffic Analysis","VirusTotal Triage"]},
+    {"group":"Tools","items":["Volatility","FTK Imager","Eric Zimmermann Tools","KAPE","Python / PowerShell"]}
+  ],
+  "achievements": [
+    {"title":"Digital Forensics Workshop","description":"Delivered a hands-on digital forensics workshop for university students."},
+    {"title":"TechHack CTF — 1st Place","description":"Achieved first place in the TechHack cybersecurity CTF competition."}
   ],
   "contact": {
-    "blurb": "Open to DFIR and SOC opportunities. The fastest way to reach me is below \u2014 swap in your real links before publishing.",
-    "links": [
-      { "label": "Email", "url": "mailto:you@example.com" },
-      { "label": "GitHub", "url": "https://github.com/yourusername" },
-      { "label": "LinkedIn", "url": "https://linkedin.com/in/yourusername" }
+    "blurb":"Open to DFIR and SOC opportunities.",
+    "links":[
+      {"label":"GitHub","url":"https://github.com/KhaladTech"}
     ]
   },
-  "footer": {
-    "name": "Khalad",
-    "note": "Built with HTML/CSS \u2014 no framework"
-  }
+  "footer":{"name":"Khalad","note":"Cybersecurity · DFIR · SOC"}
 }
