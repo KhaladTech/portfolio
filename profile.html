@@ -1,198 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit profile — Khalad DFIR</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Homepage Manager — Khalad Portfolio</title>
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 <div class="wrap">
-  <div class="topnav">
-    <a href="../index.html">← Live site</a>
-    <a href="cases.html">Cases</a>
-    <a href="profile.html" class="active">Profile</a>
-  </div>
-  <h1>Edit profile</h1>
-  <p class="sub">Everything here except the case log — hero, about, project, skills, contact.</p>
-
+  <div class="topnav"><a href="index.html">← Live site</a><a href="cases.html">Content</a><a href="profile.html" class="active">Homepage</a></div>
+  <h1>Homepage Manager</h1>
+  <p class="sub">Edit the homepage without touching HTML or JSON manually.</p>
   <div id="settingsContainer"></div>
-
-  <div id="workArea" style="display:none;">
-
-    <div class="card">
-      <h2>Hero</h2>
-      <label>Status tag</label>
-      <input type="text" id="heroTag" placeholder="Open to DFIR / SOC roles">
-      <label>Headline</label>
-      <textarea id="heroHeadline"></textarea>
-      <label>Lede (subtext under headline)</label>
-      <textarea id="heroLede"></textarea>
-      <label>Pills (comma-separated)</label>
-      <input type="text" id="heroPills" placeholder="eCDFP, eCTHP, eCPPT">
-    </div>
-
-    <div class="card">
-      <h2>About</h2>
-      <label>Paragraphs (one per line)</label>
-      <textarea id="aboutParas" style="min-height:120px;"></textarea>
-      <label>Certifications — one per line, as "CODE | Full name"</label>
-      <textarea id="aboutCerts" placeholder="eCDFP | Digital Forensics Professional"></textarea>
-    </div>
-
-    <div class="card">
-      <h2>Featured project</h2>
-      <label>Tag</label>
-      <input type="text" id="projTag" placeholder="Graduation project">
-      <label>Title</label>
-      <input type="text" id="projTitle">
-      <label>Paragraphs (one per line)</label>
-      <textarea id="projParas" style="min-height:100px;"></textarea>
-      <label>Tech stack (comma-separated)</label>
-      <input type="text" id="projStack">
-    </div>
-
-    <div class="card">
-      <h2>Skills</h2>
-      <label>One group per block, separated by a blank line. First line of each block is the group name, following lines are items.</label>
-      <textarea id="skillsBlock" style="min-height:180px; font-family: var(--mono); font-size:13px;"></textarea>
-      <p class="hint">Example:<br>Artifact analysis<br>Registry (RegRipper)<br>MFT / USN Journal (MFTECmd)<br><br>Tooling<br>Python (customtkinter)</p>
-    </div>
-
-    <div class="card">
-      <h2>Contact</h2>
-      <label>Blurb</label>
-      <textarea id="contactBlurb"></textarea>
-      <label>Links — one per line, as "Label | URL"</label>
-      <textarea id="contactLinks" placeholder="Email | mailto:you@example.com"></textarea>
-      <label>Footer note</label>
-      <input type="text" id="footerNote" placeholder="Built with HTML/CSS — no framework">
-      <label>Your name (for footer)</label>
-      <input type="text" id="footerName">
-    </div>
-
-    <div class="row" style="margin-bottom:40px;">
-      <button class="primary" id="saveAll">Save all changes</button>
-    </div>
-    <div id="saveStatus"></div>
+  <div id="workArea" style="display:none">
+    <div class="card"><h2>Hero</h2><label>Top label</label><input id="heroTag"><label>Main headline</label><textarea id="heroHeadline"></textarea><label>Intro</label><textarea id="heroLede"></textarea><label>Focus areas / pills (comma-separated)</label><input id="heroPills"></div>
+    <div class="card"><h2>About</h2><label>Paragraphs (one paragraph per line)</label><textarea id="aboutParas" style="min-height:140px"></textarea><label>Certifications (one per line: CODE | Name)</label><textarea id="aboutCerts"></textarea></div>
+    <div class="card"><h2>Skills & Tools</h2><label>Separate groups with a blank line. First line = group name.</label><textarea id="skillsBlock" style="min-height:240px;font-family:monospace"></textarea></div>
+    <div class="card"><h2>Contact</h2><label>Contact text</label><textarea id="contactBlurb"></textarea><label>Links (one per line: Label | URL)</label><textarea id="contactLinks" placeholder="GitHub | https://github.com/...&#10;LinkedIn | https://linkedin.com/in/..."></textarea></div>
+    <div class="card"><h2>Footer</h2><label>Name</label><input id="footerName"><label>Footer note</label><input id="footerNote"></div>
+    <div class="row" style="margin-bottom:15px"><button class="primary" id="saveAll">Save homepage</button><button id="reloadBtn">Discard & reload</button></div><div id="saveStatus"></div>
   </div>
 </div>
-
 <script src="admin.js"></script>
 <script>
-let dataCache = null;
-let sha = null;
-
-function init(loaded){
-  dataCache = loaded.content;
-  sha = loaded.sha;
-  document.getElementById('workArea').style.display = 'block';
-  fillForm();
-}
-
-function fillForm(){
-  const hero = dataCache.hero || {};
-  const about = dataCache.about || {};
-  const project = dataCache.project || {};
-  const skills = dataCache.skills || [];
-  const contact = dataCache.contact || {};
-  const footer = dataCache.footer || {};
-
-  document.getElementById('heroTag').value = hero.tag || '';
-  document.getElementById('heroHeadline').value = hero.headline || '';
-  document.getElementById('heroLede').value = hero.lede || '';
-  document.getElementById('heroPills').value = (hero.pills || []).join(', ');
-
-  document.getElementById('aboutParas').value = (about.paragraphs || []).join('\n');
-  document.getElementById('aboutCerts').value = (about.certifications || [])
-    .map(c => `${c.code} | ${c.name}`).join('\n');
-
-  document.getElementById('projTag').value = project.tag || '';
-  document.getElementById('projTitle').value = project.title || '';
-  document.getElementById('projParas').value = (project.paragraphs || []).join('\n');
-  document.getElementById('projStack').value = (project.stack || []).join(', ');
-
-  document.getElementById('skillsBlock').value = skills
-    .map(g => [g.group, ...(g.items || [])].join('\n')).join('\n\n');
-
-  document.getElementById('contactBlurb').value = contact.blurb || '';
-  document.getElementById('contactLinks').value = (contact.links || [])
-    .map(l => `${l.label} | ${l.url}`).join('\n');
-  document.getElementById('footerNote').value = footer.note || '';
-  document.getElementById('footerName').value = footer.name || '';
-}
-
-function linesOf(id){
-  return document.getElementById(id).value.split('\n').map(s => s.trim()).filter(Boolean);
-}
-
-function parsePipe(line){
-  const idx = line.indexOf('|');
-  if(idx === -1) return null;
-  return { a: line.slice(0, idx).trim(), b: line.slice(idx + 1).trim() };
-}
-
-function parseSkillsBlock(raw){
-  const blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
-  return blocks.map(b => {
-    const lines = b.split('\n').map(s => s.trim()).filter(Boolean);
-    return { group: lines[0] || '', items: lines.slice(1) };
-  }).filter(g => g.group);
-}
-
-document.getElementById('saveAll').addEventListener('click', async () => {
-  const status = document.getElementById('saveStatus');
-
-  dataCache.hero = {
-    tag: document.getElementById('heroTag').value.trim(),
-    headline: document.getElementById('heroHeadline').value.trim(),
-    lede: document.getElementById('heroLede').value.trim(),
-    pills: document.getElementById('heroPills').value.split(',').map(s=>s.trim()).filter(Boolean)
-  };
-
-  dataCache.about = {
-    paragraphs: linesOf('aboutParas'),
-    certifications: linesOf('aboutCerts').map(l => {
-      const p = parsePipe(l);
-      return p ? { code: p.a, name: p.b } : { code: l, name: '' };
-    })
-  };
-
-  dataCache.project = {
-    tag: document.getElementById('projTag').value.trim(),
-    title: document.getElementById('projTitle').value.trim(),
-    paragraphs: linesOf('projParas'),
-    stack: document.getElementById('projStack').value.split(',').map(s=>s.trim()).filter(Boolean)
-  };
-
-  dataCache.skills = parseSkillsBlock(document.getElementById('skillsBlock').value);
-
-  dataCache.contact = {
-    blurb: document.getElementById('contactBlurb').value.trim(),
-    links: linesOf('contactLinks').map(l => {
-      const p = parsePipe(l);
-      return p ? { label: p.a, url: p.b } : { label: l, url: '#' };
-    })
-  };
-
-  dataCache.footer = {
-    name: document.getElementById('footerName').value.trim(),
-    note: document.getElementById('footerNote').value.trim()
-  };
-
-  status.innerHTML = `<div class="status pending">Saving…</div>`;
-  try{
-    const result = await writeDataFile(dataCache, sha, 'Update profile content');
-    sha = result.content.sha;
-    status.innerHTML = `<div class="status ok">Saved. Live site will update on next load.</div>`;
-  }catch(e){
-    status.innerHTML = `<div class="status err">${e.message}</div>`;
-  }
-});
-
-renderSettingsPanel(document.getElementById('settingsContainer'), init);
-</script>
-</body>
-</html>
+let dataCache=null,sha=null;
+const $=id=>document.getElementById(id);
+function init(loaded){dataCache=loaded.content;sha=loaded.sha;$('workArea').style.display='block';fillForm()}
+function fillForm(){const h=dataCache.hero||{},a=dataCache.about||{},s=dataCache.skills||[],c=dataCache.contact||{},f=dataCache.footer||{};$('heroTag').value=h.tag||'';$('heroHeadline').value=h.headline||'';$('heroLede').value=h.lede||'';$('heroPills').value=(h.pills||[]).join(', ');$('aboutParas').value=(a.paragraphs||[]).join('\n');$('aboutCerts').value=(a.certifications||[]).map(x=>`${x.code||''} | ${x.name||''}`).join('\n');$('skillsBlock').value=s.map(g=>[g.group,...(g.items||[])].join('\n')).join('\n\n');$('contactBlurb').value=c.blurb||'';$('contactLinks').value=(c.links||[]).map(x=>`${x.label||''} | ${x.url||''}`).join('\n');$('footerName').value=f.name||'';$('footerNote').value=f.note||''}
+function lines(id){return $(id).value.split('\n').map(x=>x.trim()).filter(Boolean)}
+function pipe(x){const i=x.indexOf('|');return i<0?[x,'']:[x.slice(0,i).trim(),x.slice(i+1).trim()]}
+function skills(raw){return raw.split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean).map(b=>{const x=b.split('\n').map(v=>v.trim()).filter(Boolean);return{group:x[0],items:x.slice(1)}})}
+$('saveAll').onclick=async()=>{dataCache.hero={tag:$('heroTag').value.trim(),headline:$('heroHeadline').value.trim(),lede:$('heroLede').value.trim(),pills:$('heroPills').value.split(',').map(x=>x.trim()).filter(Boolean)};dataCache.about={paragraphs:lines('aboutParas'),certifications:lines('aboutCerts').map(x=>{const [code,name]=pipe(x);return{code,name}})};dataCache.skills=skills($('skillsBlock').value);dataCache.contact={blurb:$('contactBlurb').value.trim(),links:lines('contactLinks').map(x=>{const [label,url]=pipe(x);return{label,url}})};dataCache.footer={name:$('footerName').value.trim(),note:$('footerNote').value.trim()};$('saveStatus').innerHTML='<div class="status pending">Saving…</div>';try{const r=await writeDataFile(dataCache,sha,'Update homepage content');sha=r.content.sha;$('saveStatus').innerHTML='<div class="status ok">Saved. Refresh the live site to see the changes.</div>'}catch(e){$('saveStatus').innerHTML=`<div class="status err">${e.message}</div>`}}
+$('reloadBtn').onclick=()=>location.reload();
+renderSettingsPanel($('settingsContainer'),init);
+</script></body></html>
