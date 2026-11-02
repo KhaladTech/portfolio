@@ -48,17 +48,6 @@
   "investigations": [
     {
       "year": "2026",
-      "title": "Live investigation — Worm.Ramnit intrusion",
-      "description": "Investigated a compromised machine and correlated Prefetch, AppData, and Jumplist artifacts to reconstruct activity.",
-      "tags": [
-        "Prefetch",
-        "AppData",
-        "Jumplists",
-        "VirusTotal"
-      ]
-    },
-    {
-      "year": "2026",
       "title": "Cobalt Strike intrusion chain reconstruction",
       "description": "Correlated Windows Defender, PowerShell, and Sysmon logs into a sequence of attacker activity.",
       "tags": [
