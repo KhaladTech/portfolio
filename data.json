@@ -30,20 +30,7 @@
       }
     ]
   },
-  "projects": [
-    {
-      "title": "ForensiQ + EZ Toolkit",
-      "type": "Graduation Project",
-      "description": "An automated DFIR web platform paired with a desktop forensics toolkit for file triage and Windows artifact analysis.",
-      "tags": [
-        "Python",
-        "DFIR",
-        "RegRipper",
-        "MFTECmd",
-        "AmcacheParser"
-      ]
-    }
-  ],
+  "projects": [],
   "labs": [
     {
       "title": "Cyber Kill Chain Adversary Simulation",
